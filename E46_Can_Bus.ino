@@ -1,4 +1,4 @@
-
+#include "can_message_handler.hpp"
 #include <Canbus.h>
 #include <defaults.h>
 #include <global.h>
@@ -7,27 +7,27 @@
 
 void setup() {
   Serial.begin(115200); // For debug use
-  //Serial.println("CAN Read - Testing receival of CAN Bus message");
+  // Serial.println("CAN Read - Testing receival of CAN Bus message");
   delay(1000);
 
   if (Canbus.init(CANSPEED_500)) // Initialise MCP2515 CAN controller at the
                                  // specified speed
-    //Serial.println("CAN Init ok");
+    // Serial.println("CAN Init ok");
     delay(1);
   else
-    //Serial.println("Can't init CAN");
-    for(;;){
+    // Serial.println("Can't init CAN");
+    for (;;) {
       delay(100);
     }
 
   delay(1000);
 }
 
-void dump_can_msg(tCAN& message) {
+void dump_can_msg(tCAN &message) {
   Serial.write(message.raw, sizeof(message.raw));
 }
 
-void print_can_msg(tCAN& message) {
+void print_can_msg(tCAN &message) {
   // if(message.id == 0x620 and message.data[2] == 0xFF)  //uncomment when you
   // want to filter
   //{
@@ -45,14 +45,12 @@ void print_can_msg(tCAN& message) {
   //}
 }
 
-void parse_can_msg(tCAN& message) {;}
-
+CarStatus status;
+tCAN message;
 void loop() {
-
-  tCAN message;
   if (mcp2515_check_message()) {
     if (mcp2515_get_message(&message)) {
-      dump_can_msg(message);
+      dispatch_can_handler(message, status);
     }
   }
 }

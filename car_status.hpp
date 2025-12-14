@@ -1,9 +1,12 @@
 // Car status
+#include <Arduino.h>
 
 template <typename T> struct Field {
-  std::string_view name;
+  const char *name;
   unsigned long ts{0};
   T value{};
+
+  Field(const char *field_name) : name(field_name) {}
   void update(T new_value) {
     value = new_value;
     ts = millis();
@@ -11,7 +14,7 @@ template <typename T> struct Field {
     Serial.print(": ");
     Serial.println("value");
   }
-}
+};
 
 class CarStatus {
 public:
