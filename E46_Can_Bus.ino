@@ -47,10 +47,37 @@ void print_can_msg(tCAN &message) {
 
 CarStatus status;
 tCAN message;
+
+void print_car_status(CarStatus &status) {
+  char buf[256];
+
+  snprintf(buf, sizeof(buf),
+           "RPM:%4d | Thr:%3d%% | Brk: %s | ST: %d | Oil:%3dF | Water:%3dF | "
+           "Spd:%3dmp | "
+           "Whl:%3d/%3d/%3d/%3d | Flg:%s%s",
+           status.rpm.value, (int)status.throttle_pct.value,
+           status.brake_pedal.value ? "Yes" : "-",
+           (int)status.steering_angle_deg.value, status.oil_temp_f.value,
+           status.water_temp_f.value, (int)status.speed_mph.value,
+           (int)status.wheel_speed_mph_fl.value,
+           (int)status.wheel_speed_mph_fr.value,
+           (int)status.wheel_speed_mph_rl.value,
+           (int)status.wheel_speed_mph_rr.value,
+           status.check_engine.value ? "CEL" : "-", // Simple 1-char flags
+           status.overheat.value ? "Overheat" : "-");
+
+  Serial.println(buf);
+}
+
+unsigned long print_update_ts = 0;
 void loop() {
   if (mcp2515_check_message()) {
     if (mcp2515_get_message(&message)) {
       dispatch_can_handler(message, status);
     }
+  }
+  if (millis() - print_update_ts > 0.2) {
+    print_update_ts = millis();
+    print_car_status(status);
   }
 }
