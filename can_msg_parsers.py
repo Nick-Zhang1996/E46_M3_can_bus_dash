@@ -81,7 +81,7 @@ def parse_329_temp_cruise(data):
     return {
         "name": "DME_EngineData",
         "CoolantTemp_C": round(coolant_temp, 1),
-        "Throttle_Pct": round(throttle_pos, 1),
+        "Throttle": round(throttle_pos, 1),
         "BrakePedal": brake_depressed,
         "Kickdown": kickdown
     }

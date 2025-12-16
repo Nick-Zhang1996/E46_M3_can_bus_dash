@@ -1,3 +1,5 @@
+#ifndef __can_message_handler_hpp__
+#define __can_message_handler_hpp__
 #include "car_status.hpp"
 #include <Arduino.h>
 #include <mcp2515.h>
@@ -55,7 +57,7 @@ public:
     status.water_temp_f.update(water_temp_c * 1.8 + 32.0);
 
     int throttle = msg.data[5] / 254.0f * 100.0f;
-    status.throttle_pct.update(throttle);
+    status.throttle.update(throttle);
 
     status.brake_pedal.update(msg.data[6] & 0x01);
     status.kickdown.update(msg.data[6] & 0x04);
@@ -137,3 +139,5 @@ public:
 };
 
 void dispatch_can_handler(const tCAN &msg, CarStatus &status);
+
+#endif

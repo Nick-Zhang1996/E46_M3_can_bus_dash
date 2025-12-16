@@ -22,7 +22,7 @@ class CANFrame:
 
 def main():
     # Open serial port
-    with serial.Serial(SERIAL_PORT, BAUD_RATE, timeout=2e-1) as ser:
+    with //Serial.Serial(SERIAL_PORT, BAUD_RATE, timeout=2e-1) as ser:
         print(f"Listening on {SERIAL_PORT} at {BAUD_RATE} baud...")
         frames = []
         try:

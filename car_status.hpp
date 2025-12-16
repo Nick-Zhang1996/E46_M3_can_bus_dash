@@ -1,4 +1,6 @@
 // Car status
+#ifndef __car_status_hpp__
+#define __car_status_hpp__
 #include <Arduino.h>
 
 template <typename T> struct Field {
@@ -10,9 +12,9 @@ template <typename T> struct Field {
   void update(T new_value) {
     value = new_value;
     ts = millis();
-    Serial.print(name);
-    Serial.print(": ");
-    Serial.println("value");
+    // Serial.print(name);
+    // Serial.print(": ");
+    // Serial.println("value");
   }
 };
 
@@ -26,7 +28,7 @@ public:
 
   // Engine
   Field<int> rpm{"RPM"};
-  Field<float> throttle_pct{"Throttle (%)"};
+  Field<float> throttle{"Throttle (%)"};
 
   // Vehicle dynamics
   Field<float> speed_kph{"Speed (kph)"};
@@ -53,3 +55,5 @@ public:
   Field<uint32_t> odometer_km{"Odometer (km)"};
   Field<uint16_t> fuel_cons_raw{"Fuel Consumption (raw)"};
 };
+
+#endif
