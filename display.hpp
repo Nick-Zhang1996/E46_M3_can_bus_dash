@@ -98,7 +98,7 @@ public:
   void set_steering(int val) {
     sprintf(buffer_, "steering.txt=\"%d\"", val);
     send_command(buffer_);
-    int bar_val = map(val, -100, 100, 1, 100);
+    int bar_val = map(val, -100, 100, 100, 1);
     bar_val = constrain(bar_val, 1, 100);
     sprintf(buffer_, "steering_bar.val=%d", bar_val);
     send_command(buffer_);
@@ -116,7 +116,7 @@ public:
     set_rpm(status.rpm.value);
     set_throttle(status.throttle.value);
     set_steering(status.steering_angle_deg.value);
-    set_brake(status.brake_pedal.value ? 100 : 0);
+    set_brake((int)(status.front_brake_pressure.value * 100));
     set_speed(status.speed_mph.value);
   }
 

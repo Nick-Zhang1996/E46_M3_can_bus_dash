@@ -43,6 +43,8 @@ public:
   Field<float> wheel_speed_mph_fr{"Wheel Speed FR (mph)"};
   Field<float> wheel_speed_mph_rl{"Wheel Speed RL (mph)"};
   Field<float> wheel_speed_mph_rr{"Wheel Speed RR (mph)"};
+  Field<float> front_brake_pressure{"Brake Pressure F"};
+  Field<float> rear_brake_pressure{"Brake Pressure R"};
 
   // Switches / flags
   Field<bool> brake_pedal{"Brake Pedal"};

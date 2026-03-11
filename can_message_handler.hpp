@@ -19,8 +19,8 @@ public:
   uint16_t id() const override { return ARBID; }
 
   void parse(const tCAN &msg, CarStatus &status) override {
-    int rpm = (msg.data[3] << 8) | msg.data[2];
-    status.rpm.update(rpm);
+    uint16_t rpm = ((uint16_t)msg.data[3] << 8) | msg.data[2];
+    status.rpm.update((int)rpm / 6.4);
   }
 };
 

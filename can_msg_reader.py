@@ -25,8 +25,8 @@ def main():
     # TARGET_ID = 0x1F0
     # TARGET_KEY = 'LR_Speed_kph'
     # -----------------------------------
-    TARGET_ID = 0x1F3
-    TARGET_KEY = "byte5"
+    TARGET_ID = 0x316
+    TARGET_KEY = "RPM"
     # 1. Load the data
     try:
         with open(filename, "rb") as f:

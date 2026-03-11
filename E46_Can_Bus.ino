@@ -10,8 +10,12 @@
 // On Arduino Uno R4 WiFi, Serial is USB, Serial1 is D0/D1.
 // Serial is for debugging, Serial1 is for Nextion display
 // However, sparkfun can bus library doesn't work with renesas CPI :()
+constexpr int pin_f_brake_pres = A0;
+constexpr int pin_r_brake_pres = A1;
 
 void setup() {
+  pinMode(pin_f_brake_pres, INPUT);
+  pinMode(pin_r_brake_pres, INPUT);
   // Serial.begin(115200);
   Serial.begin(115200);
   // Serial.println("CAN Read - Testing receival of CAN Bus message");
@@ -55,20 +59,21 @@ Nextion display(Serial);
 void print_car_status(CarStatus &status) {
   char buf[256];
 
-  snprintf(buf, sizeof(buf),
-           "RPM:%4d | Thr:%3d%% | Brk: %s | ST: %d | Oil:%3dF | Water:%3dF | "
-           "Spd:%3dmp | "
-           "Whl:%3d/%3d/%3d/%3d | Flg:%s%s",
-           status.rpm.value, (int)status.throttle.value,
-           status.brake_pedal.value ? "Yes" : "-",
-           (int)status.steering_angle_deg.value, status.oil_temp_f.value,
-           status.water_temp_f.value, (int)status.speed_mph.value,
-           (int)status.wheel_speed_mph_fl.value,
-           (int)status.wheel_speed_mph_fr.value,
-           (int)status.wheel_speed_mph_rl.value,
-           (int)status.wheel_speed_mph_rr.value,
-           status.check_engine.value ? "CEL" : "-", // Simple 1-char flags
-           status.overheat.value ? "Overheat" : "-");
+  snprintf(
+      buf, sizeof(buf),
+      "RPM:%4d | Thr:%3d%% | Brk: %3d%% | ST: %d | Oil:%3dF | Water:%3dF | "
+      "Spd:%3dmp | "
+      "Whl:%3d/%3d/%3d/%3d | Flg:%s%s",
+      status.rpm.value, (int)status.throttle.value,
+      (int)(100 * status.front_brake_pressure.value),
+      (int)status.steering_angle_deg.value, status.oil_temp_f.value,
+      status.water_temp_f.value, (int)status.speed_mph.value,
+      (int)status.wheel_speed_mph_fl.value,
+      (int)status.wheel_speed_mph_fr.value,
+      (int)status.wheel_speed_mph_rl.value,
+      (int)status.wheel_speed_mph_rr.value,
+      status.check_engine.value ? "CEL" : "-", // Simple 1-char flags
+      status.overheat.value ? "Overheat" : "-");
 
   // Serial.println(buf);
 }
@@ -83,7 +88,7 @@ void update_test_status(CarStatus &status) {
   status.throttle.value = fmod(status.throttle.value + 10.0, 110);
   // status.brake.value++;
   // status.brake.value %= 110;
-  status.brake_pedal.value = !status.brake_pedal.value;
+  // status.brake_pedal.value = !status.brake_pedal.value;
   status.steering_angle_deg.value =
       fmod(status.steering_angle_deg.value + 10.0 + 100.0, 200) - 100;
   status.speed_mph.value = fmod(status.speed_mph.value + 10.0, 160);
@@ -97,8 +102,12 @@ void loop() {
   }
   if (millis() - print_update_ts > 200) {
     print_update_ts = millis();
+    status.front_brake_pressure.value =
+        (float)(analogRead(pin_f_brake_pres) - 103) / (1023 - 103);
+    status.rear_brake_pressure.value =
+        (float)(analogRead(pin_r_brake_pres) - 103) / (1023 - 103);
     print_car_status(status);
-    update_test_status(status);
+    // update_test_status(status);
     display.update_display(status);
   }
 }
